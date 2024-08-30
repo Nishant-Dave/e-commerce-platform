@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from products.models import Product
-# Create your views here.
+# Create your views here..
 
 
 def get_product(request, slug):

@@ -3,37 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from .models import Profile
+from .models import UserProfile
 
-
-
-def login_page(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user_obj = User.objects.filter(username = email)
-
-        if not User.objects.filter(username = email).exists():
-            messages.warning(request, "Account not found")
-            return HttpResponseRedirect(request.path_info)
-
-        if not user_obj[0].profile.is_email_verified:
-            messages.warning(request, "Your account is not varified.")
-            return HttpResponseRedirect(request.path_info)
-
-
-        user_obj= authenticate(username = email, password = password)
-        if user_obj:
-            login(request, user_obj)
-            return redirect('/')
-        
-        messages.warning(request, 'Invalid credentials')
-        return redirect('login')
-
-
-
-
-    return render(request, 'accounts/login.html')
 
 
 def register_page(request):
@@ -64,7 +35,7 @@ def register_page(request):
 
 def activate_email(request, email_token):
     try:
-        user = Profile.objects.get(email_token= email_token)
+        user = Userprofile.objects.get(email_token= email_token)
         user.is_email_verified = True
         user.save()
 
@@ -73,3 +44,32 @@ def activate_email(request, email_token):
 
     return redirect('/')
 
+
+
+def login_page(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user_obj = User.objects.filter(username = email)
+
+        if not User.objects.filter(username = email).exists():
+            messages.warning(request, "Account not found")
+            return HttpResponseRedirect(request.path_info)
+
+        if not user_obj[0].profile.is_email_verified:
+            messages.warning(request, "Your account is not varified.")
+            return HttpResponseRedirect(request.path_info)
+
+
+        user_obj= authenticate(username = email, password = password)
+        if user_obj:
+            login(request, user_obj)
+            return redirect('/')
+        
+        messages.warning(request, 'Invalid credentials')
+        return redirect('login')
+
+
+
+
+    return render(request, 'accounts/login.html')

@@ -11,7 +11,7 @@ def get_product(request, slug):
         # product = Product.objects.get(slug = slug)
         context = {'product': product}
 
-        print(f"Product retrieved: {product}")
+        print(f"Product name: {product}")
 
         size = request.GET.get('size') 
         if size:

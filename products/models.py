@@ -18,14 +18,12 @@ class Category(BaseModel):
 
 class ColorVariant(BaseModel):
     color_name = models.CharField(max_length=50)
-    # price = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return self.color_name
 
 class RAM(BaseModel):
     size_name = models.CharField(max_length=50)
-    # price = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return self.size_name
@@ -33,7 +31,6 @@ class RAM(BaseModel):
 class Product(BaseModel):
     product_name = models.CharField(max_length=50)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
-    # price = models.IntegerField()
     product_description = models.TextField(blank=True, null=True)
     color_variant = models.ManyToManyField(ColorVariant, blank=True)
     ram_variant = models.ManyToManyField(RAM, blank=True)
@@ -65,7 +62,7 @@ class ProductPrice(models.Model):
 class ProductImg(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
     color = models.ForeignKey(ColorVariant, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='product_images/')
+    image = models.ImageField(upload_to='product_images')
 
     def __str__(self):
         return f"{self.product.product_name} - {self.color.color_name}"

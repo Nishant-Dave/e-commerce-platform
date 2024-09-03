@@ -5,28 +5,58 @@ from django.http import HttpResponse
 
 
 def get_product(request, slug):
-    product = None
     try:
+
         product = get_object_or_404(Product, slug=slug)
-        # product = Product.objects.get(slug = slug)
-        context = {'product': product}
+        
+        # Fetch all images related to the product
+        images = product.images.all()
+        
+        # Fetch the price for the product (assuming you want the first available price)
+        product_price = product.product_price.first()  # Adjust this as needed
 
-        print(f"Product name: {product}")
-
-        size = request.GET.get('size') 
-        if size:
-            # size = request.GET.get('size')
-            price = product.get_product_price_by_size(size)
-            context['selected_size'] = size
-            context['updated_price'] = price
-
-            print(f"Size: {size}, Price: {price}")
-            
-
+        context = {
+            'product': product,
+            'images': images,
+            'product_price': product_price
+        }
+        
         return render(request, 'product/product.html', context=context)
     
     except Product.DoesNotExist:
-        # Handle the case where the product does not exist
         return HttpResponse("Product not found", status=404)
     except Exception as e:
-        print (e)
+        print(f"An error occurred: {e}")
+        return HttpResponse("An unexpected error occurred.", status=500)
+
+
+
+
+# def get_product(request, slug):
+#     product = None
+#     try:
+#         product = get_object_or_404(Product, slug=slug)
+#         # product = Product.objects.get(slug = slug)
+#         context = {
+#             'product': product,
+#             'images': product.images.all()
+#                    }
+        
+#         # size = request.GET.get('size')             
+
+#         return render(request, 'product/product.html', context=context)
+    
+#     except Product.DoesNotExist:
+        
+#         return HttpResponse("Product not found", status=404)
+#     except Exception as e:
+#         print (e)
+
+
+
+# def get_product(request, slug):
+#     # Fetch the product using the slug
+#     product = get_object_or_404(Product, slug=slug)
+    
+#     # Pass the product to the template
+#     return render(request, 'product/product.html', {'product': product})

@@ -16,6 +16,7 @@ class ProductPriceInline(admin.TabularInline):
 
 class ProductImageAdmin(admin.TabularInline):  
     model = ProductImg
+    list_display = ['product', 'color']  
     extra = 1 
 
 @admin.register(Product)
@@ -43,6 +44,7 @@ class ProductPriceAdmin(admin.ModelAdmin):
 
 admin.site.register(Category)
 admin.site.register(Coupon)
+admin.site.register(ProductImg)
 
 
 

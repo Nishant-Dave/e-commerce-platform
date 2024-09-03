@@ -9,13 +9,13 @@
 
         <div class="col-md-3">
             <figure class="card card-product-grid">
-                <div class="img-wrap"> <img src="/media/{{product.product_images.first.image}}"> </div>
+                <div class="img-wrap"> <img src="{{ product.images.first.image.url }}"> </div>
                 <figcaption class="info-wrap border-top">
                     <a href="{% url 'get_product' product.slug %}" class="title">{{product.product_name}}</a>
-                    <div class="price mt-2">${{product.price}}.00</div> <!-- price-wrap.// -->
+                    <div class="price mt-2">${{ product.product_price.first.price }}.00</div> 
                 </figcaption>
-            </figure> <!-- card // -->
-        </div> <!-- col.// -->
+            </figure> 
+        </div> 
 
         {% endfor %}
 

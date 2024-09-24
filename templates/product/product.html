@@ -4,40 +4,30 @@
 
 <section class="section-content padding-y bg">
   <div class="container">
-  
 
-    <!-- ============================ COMPONENT 1 ================================= -->
-  
-  
     <div class="card">
       <div class="row no-gutters">
         <aside class="col-md-6">
           <article class="gallery-wrap">
             <div class="img-big-wrap">
-
               <div>
                 {% if product.images.first %}
-
-                <a href="#"><img src="{{ product.images.first.image.url }}" alt="{{ products.product_name }}"></a>
+                <a href="#"><img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}"></a>
                 {% else %}
                 <p>No image available</p>
                 {% endif %}
               </div>
-            </div> <!-- slider-product.// -->
+            </div>
             <div class="thumbs-wrap">
-
               {% for image in product.images.all %}
-
-              <a href="#" class="item-thumb"> <img src="{{image.image.url}}" alt="Thumbnail"></a>
-
+              <a href="#" class="item-thumb"> <img src="{{ image.image.url }}" alt="Thumbnail"></a>
               {% endfor %}
-            </div> <!-- slider-nav.// -->
-          </article> <!-- gallery-wrap .end// -->
+            </div>
+          </article>
         </aside>
         <main class="col-md-6 border-left">
           <article class="content-body">
-
-            <h2 class="title">{{product.product_name}}</h2>
+            <h2 class="title">{{ product.product_name }}</h2>
 
             <div class="rating-wrap my-3">
               <ul class="rating-stars">
@@ -49,97 +39,116 @@
                 <li>
                   <i class="fa fa-star"></i> <i class="fa fa-star"></i>
                   <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
                 </li>
               </ul>
               <small class="label-rating text-muted">132 reviews</small>
               <small class="label-rating text-success"> <i class="fa fa-clipboard-check"></i> 154 orders </small>
-            </div> <!-- rating-wrap.// -->
+            </div>
 
             <div class="mb-3">
-              <var class="price h4">₹ {{ product_price.price }} .00</var>
+              <var class="price h4">₹ <span id="product-price">{{ product_price.price }}</span> .00</var>
+            </div>
 
-            </div> <!-- price-detail-wrap .// -->
-
-            <p>{{product.product_description}}</p>
-
+            <p>{{ product.product_description }}</p>
 
             <dl class="row">
               <dt class="col-sm-3">Model:</dt>
-              <dd class="col-sm-9">{{product.product_name}}</dd>
+              <dd class="col-sm-9">{{ product.product_name }}</dd>
 
-              <!-- <dt class="col-sm-3">Color</dt>
-              <dd class="col-sm-9">Brown</dd> -->
-
+              
               <div class="form-group col-md">
                 <label>Color options</label>
                 <div class="mt-1">
-
                   {% for color in product.color_variant.all %}
                   <label class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" name="select_color" checked="" class="custom-control-input">
-                    <div class="custom-control-label"> {{color.color_name}} </div>
+                    <input type="radio" name="select_color" value="{{ color.uid }}" class="custom-control-input" {% if forloop.first %} checked {% endif %}>
+                    <div class="custom-control-label">{{ color.color_name }}</div>
                   </label>
-
                   {% endfor %}
-
                 </div>
-              </div> <!-- col.// -->
-
+              </div>
+              
             </dl>
 
             <hr>
+
             <div class="form-row">
               <div class="form-group col-md flex-grow-0">
                 <label>Quantity</label>
                 <div class="input-group mb-3 input-spinner">
                   <div class="input-group-prepend">
-                    <button class="btn btn-light" type="button" id="button-plus"> + </button>
+                    <button class="btn btn-light" type="button" id="button-minus"> - </button>
                   </div>
                   <input type="text" class="form-control" value="1">
                   <div class="input-group-append">
-                    <button class="btn btn-light" type="button" id="button-minus"> − </button>
+                    <button class="btn btn-light" type="button" id="button-plus"> + </button>
                   </div>
                 </div>
-              </div> 
+              </div>
 
-              {% if product.size_variant.count %}
+              {% if product.ram_variant.count %}
+              
               <div class="form-group col-md">
                 <label>RAM size</label>
                 <div class="mt-1">
-
-                  {% for size in product.size_variant.all %}
+                  {% for ram in product.ram_variant.all %}
                   <label class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" name="select_size" onchange="('{{size.size_name}}')" checked class="custom-control-input">
-                    <div class="custom-control-label">{{size.size_name}} GB </div>
+                    <input type="radio" name="select_ram" value="{{ ram.uid }}" class="custom-control-input" {% if forloop.first %} checked {% endif %}>
+                    <div class="custom-control-label">{{ ram.size_name }} GB</div>
                   </label>
-
                   {% endfor %}
-
                 </div>
-              </div> <!-- col.// -->
+              </div>
+              
               {% endif %}
-            </div> <!-- row.// -->
+            </div>
 
-            <a href="#" class="btn  btn-primary"> Buy now </a>
-            <a href="#" class="btn  btn-outline-primary"> <span class="text">Add to cart</span> <i
+            <a href="#" class="btn btn-primary"> Buy now </a>
+            <a href="#" class="btn btn-outline-primary"> <span class="text">Add to cart</span> <i
                 class="fas fa-shopping-cart"></i> </a>
-          </article> <!-- product-info-aside .// -->
-        </main> <!-- col.// -->
-      </div> <!-- row.// -->
-    </div> <!-- card.// -->
-    <!-- ============================ COMPONENT 1 END .// ================================= -->
-
+          </article>
+        </main>
+      </div>
+    </div>
 
   </div>
+
 </section>
 
 
 <script>
-  function get_correct_price(size) {
-    window.location.href = window.location.pathname + `?size=${size}`
+  const prices = {
+    {% for key, price in price_dict.items %}
+      '{{ key }}': {{ price }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+  };
+
+  console.log("Prices object:", prices); 
+
+  function updatePrice() {
+    const selectedRam = document.querySelector('input[name="select_ram"]:checked');
+    const selectedColor = document.querySelector('input[name="select_color"]:checked');
+    
+    if (selectedRam && selectedColor) {
+      const priceKey = `${selectedRam.value}-${selectedColor.value}`;
+      console.log("Constructed priceKey:", priceKey);
+      const price = prices[priceKey];
+  
+      document.getElementById('product-price').textContent = price !== undefined ? price : 'Price not available';
+  
+      console.log("Selected RAM UID: " + selectedRam.value);
+      console.log("Selected Color UID: " + selectedColor.value);
+      console.log("Price: " + price);
+    } else {
+      document.getElementById('product-price').textContent = 'Please select RAM and Color';
+    }
   }
 
+  document.addEventListener('DOMContentLoaded', updatePrice);
+
+  document.querySelectorAll('input[name="select_ram"], input[name="select_color"]').forEach(input => {
+    input.addEventListener('change', updatePrice);
+  });
 </script>
 
 {% endblock %}

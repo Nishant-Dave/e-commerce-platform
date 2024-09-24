@@ -1,28 +1,32 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Product
+from .models import Product, ProductPrice
 from django.http import HttpResponse
-# Create your views here..
 
 
 def get_product(request, slug):
     try:
 
         product = get_object_or_404(Product, slug=slug)
-        
-        # Fetch all images related to the product
-        images = product.images.all()
-        
-        # Fetch the price for the product (assuming you want the first available price)
-        product_price = product.product_price.first()  # Adjust this as needed
+        product_price = product.product_price.all()  
+
+        # price_dict = {
+        #     f"{price.ram.id}-{price.color.id}": price.price for price in product_price
+        # }
+        price_dict = {}
+        for price in product_price:
+        # Since ram is a ForeignKey, we can directly access its id
+            price_dict[f"{price.ram.uid}-{price.color.uid}"] = price.price
+
 
         context = {
             'product': product,
-            'images': images,
-            'product_price': product_price
+            'product_price': product_price,
+            'price_dict': price_dict
         }
-        
+        print(f"The product dict is:  {price_dict}")
         return render(request, 'product/product.html', context=context)
-    
+        
+     
     except Product.DoesNotExist:
         return HttpResponse("Product not found", status=404)
     except Exception as e:

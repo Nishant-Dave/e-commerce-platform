@@ -39,13 +39,11 @@ class RAMAdmin(admin.ModelAdmin):
 @admin.register(ProductPrice)
 class ProductPriceAdmin(admin.ModelAdmin):
     list_display = ['product', 'ram', 'color', 'price']
-    search_fields = ['product__product_name', 'ram__size_name', 'color__color_name']  # Uncommented
-
+    search_fields = ['product__product_name', 'ram__size_name', 'color__color_name']  
 
 admin.site.register(Category)
 admin.site.register(Coupon)
 admin.site.register(ProductImg)
-
 
 
 

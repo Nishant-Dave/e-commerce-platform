@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import uuid
 from base.emails import send_account_activation_email
-from products.models import Product
+from products.models import Product, ColorVariant, RAM
 
 
 # class Profile(BaseModel):
@@ -15,7 +15,7 @@ from products.models import Product
 #     profile_img = models.ImageField(upload_to='profile')
 
 
-class UserProfile(models.Model):
+class UserProfile(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
     number = models.CharField(max_length=15, blank=True, null=True)
     email_id = models.EmailField(blank=True, null=True)
@@ -25,9 +25,18 @@ class UserProfile(models.Model):
     profile_img = models.ImageField(upload_to='profile', blank=True, null=True)
     is_email_verified = models.BooleanField(default=False)
     email_token = models.CharField(max_length=50, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    # created_at = models.DateTimeField(auto_now_add=True)
 
     
+class Cart(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carts')
+    is_paid = models.BooleanField(default=False)
+        
+class CartItem(BaseModel):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+    color_variant = models.ForeignKey(ColorVariant, on_delete=models.SET_NULL, null=True, blank=True)
+    ram_variant = models.ForeignKey(RAM, on_delete=models.SET_NULL, null=True, blank=True)
 
 
 

@@ -35,7 +35,7 @@ def register_page(request):
 
 def activate_email(request, email_token):
     try:
-        user = Userprofile.objects.get(email_token= email_token)
+        user = UserProfile.objects.get(email_token= email_token)
         user.is_email_verified = True
         user.save()
 
@@ -56,7 +56,7 @@ def login_page(request):
             messages.warning(request, "Account not found")
             return HttpResponseRedirect(request.path_info)
 
-        if not user_obj[0].profile.is_email_verified:
+        if not user_obj[0].userprofile.is_email_verified:
             messages.warning(request, "Your account is not varified.")
             return HttpResponseRedirect(request.path_info)
 
@@ -68,8 +68,5 @@ def login_page(request):
         
         messages.warning(request, 'Invalid credentials')
         return redirect('login')
-
-
-
 
     return render(request, 'accounts/login.html')
